@@ -3,6 +3,7 @@
 import Clock from "./components/Clock";
 import Weather from "./components/Weather";
 import TodoNew from "./components/TodoNew";
+import VocabStudy from "./components/VocabStudy";
 import { motion } from "framer-motion";
 
 export default function Home() {
@@ -70,6 +71,14 @@ export default function Home() {
           className="mt-6 card overflow-hidden shadow-lg bg-[#161b22] border border-[#30363d] rounded-lg"
         >
           <TodoNew />
+        </motion.div>
+        
+        {/* 영한 단어 공부 */}
+        <motion.div 
+          variants={itemVariants}
+          className="mt-6 card overflow-hidden shadow-lg bg-[#161b22] border border-[#30363d] rounded-lg"
+        >
+          <VocabStudy />
         </motion.div>
 
         <motion.footer 
