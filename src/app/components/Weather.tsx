@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface WeatherData {
   main: {
@@ -61,6 +62,11 @@ const getWeatherBackground = (main: string) => {
     case "haze": return "from-[#4c6b8a] to-[#2c3e50]";
     default: return "from-[#2d5a8b] to-[#0d2235]";
   }
+};
+
+// 날씨 아이콘 URL 생성
+const getWeatherIcon = (iconCode: string) => {
+  return `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
 };
 
 export default function Weather() {
@@ -129,30 +135,26 @@ export default function Weather() {
             animate={{ scale: [1, 1.1, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <svg 
-              className="w-6 h-6 text-[#58a6ff]" 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
+            <div 
+              className="flex flex-col items-center justify-center h-full"
+              style={{ animation: 'fadeIn 0.5s ease-in' }}
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" 
-              />
-            </svg>
+              <div 
+                className="flex items-center justify-center w-full"
+                style={{ height: '80px' }}
+              >
+                <Image
+                  src="/weather-loading.svg"
+                  alt="Loading weather data"
+                  width={80}
+                  height={80}
+                  style={{ filter: 'invert(0.7)' }}
+                />
+              </div>
+              <p className="text-gray-500 mt-4">날씨 정보를 불러오는 중...</p>
+            </div>
           </motion.div>
         </motion.div>
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-4 text-[#f0f6fc]"
-        >
-          날씨 정보를 불러오는 중...
-        </motion.p>
       </div>
     );
   }
@@ -221,11 +223,19 @@ export default function Weather() {
               className="relative"
             >
               <div className="absolute inset-0 rounded-full bg-white/10 blur-md transform scale-75 -translate-y-2"></div>
-              <img
-                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`}
-                alt={weather.weather[0].description}
-                className="w-28 h-28 z-10 relative filter drop-shadow-lg"
-              />
+              <div className="text-center">
+                <div className="flex flex-col items-center mb-4">
+                  <div className="bg-[#c6dcff] dark:bg-[#193654] rounded-full p-3 mb-2">
+                    <Image 
+                      src={getWeatherIcon(weather.weather[0].icon)} 
+                      alt={weather.weather[0].description}
+                      width={100}
+                      height={100}
+                      className="w-20 h-20"
+                    />
+                  </div>
+                </div>
+              </div>
             </motion.div>
           )}
           <motion.div 

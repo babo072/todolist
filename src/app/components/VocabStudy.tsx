@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 // 단어 공부 컴포넌트
@@ -135,7 +135,7 @@ export default function VocabStudy() {
     const voices = window.speechSynthesis.getVoices();
     const isEnglish = lang.startsWith('en');
     
-    let selectedVoice = voices.find(voice => 
+    const selectedVoice = voices.find(voice => 
       voice.lang === lang && voice.localService
     ) || voices.find(voice => 
       voice.lang.includes(isEnglish ? 'en' : 'th')
@@ -202,18 +202,14 @@ export default function VocabStudy() {
     });
   };
 
-  // 음성 목록 관리를 위한 상태
-  const [voicesLoaded, setVoicesLoaded] = useState(false);
-  
   // 컴포넌트 초기 마운트 시 음성 목록 로드
   useEffect(() => {
+    // 음성 목록이 비동기적으로 로드되므로 이벤트 리스너 추가
     if (typeof window !== 'undefined') {
-      // 음성 목록 로드 함수
       const loadVoices = () => {
+        // 음성 목록 로드 완료 시 이벤트 처리
         const availableVoices = window.speechSynthesis.getVoices();
         if (availableVoices.length > 0) {
-          setVoicesLoaded(true);
-          
           // 사용 가능한 음성 목록 로깅
           console.log('Available voices:');
           availableVoices.forEach(voice => {
