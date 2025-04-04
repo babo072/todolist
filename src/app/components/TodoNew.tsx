@@ -147,30 +147,9 @@ export default function TodoNew() {
           </div>
         </div>
 
-        {/* 검색 및 필터 */}
-        <div className="mb-6 space-y-4">
-          <div className="flex gap-2 flex-wrap">
-            <input
-              type="text"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              placeholder="할일 검색..."
-              className="flex-1 px-4 py-2 bg-[#0d1117] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none focus:border-[#58a6ff]"
-            />
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="px-4 py-2 bg-[#0d1117] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none"
-            >
-              <option value="all">모두 보기</option>
-              <option value="active">진행 중</option>
-              <option value="completed">완료됨</option>
-            </select>
-          </div>
-        </div>
-
         {/* 새 할일 입력 */}
         <div className="bg-[#0d1117] p-4 rounded-lg border border-[#30363d] mb-6">
+          <h3 className="text-[#58a6ff] font-medium mb-3">새 할일 추가</h3>
           <input
             type="text"
             value={newTodoText}
@@ -181,33 +160,46 @@ export default function TodoNew() {
           />
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-            <select
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              className="px-3 py-2 bg-[#161b22] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none"
-            >
-              <option value="일반">일반</option>
-              <option value="업무">업무</option>
-              <option value="개인">개인</option>
-              <option value="중요">중요</option>
-            </select>
+            <div>
+              <label className="block text-xs text-[#8b949e] mb-1">카테고리</label>
+              <select
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                className="w-full px-3 py-2 bg-[#161b22] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none"
+              >
+                <option value="일반">일반</option>
+                <option value="업무">업무</option>
+                <option value="개인">개인</option>
+                <option value="중요">중요</option>
+              </select>
+            </div>
             
-            <select
-              value={newPriority}
-              onChange={(e) => setNewPriority(e.target.value as "high" | "medium" | "low")}
-              className="px-3 py-2 bg-[#161b22] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none"
-            >
-              <option value="high">우선순위: 높음</option>
-              <option value="medium">우선순위: 중간</option>
-              <option value="low">우선순위: 낮음</option>
-            </select>
+            <div>
+              <label className="block text-xs text-[#8b949e] mb-1">우선순위</label>
+              <select
+                value={newPriority}
+                onChange={(e) => setNewPriority(e.target.value as "high" | "medium" | "low")}
+                className="w-full px-3 py-2 bg-[#161b22] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none"
+              >
+                <option value="high">높음</option>
+                <option value="medium">중간</option>
+                <option value="low">낮음</option>
+              </select>
+            </div>
             
-            <input
-              type="date"
-              value={newDueDate}
-              onChange={(e) => setNewDueDate(e.target.value)}
-              className="px-3 py-2 bg-[#161b22] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none"
-            />
+            <div>
+              <label className="block text-xs text-[#8b949e] mb-1">마감일</label>
+              <input
+                type="date"
+                value={newDueDate}
+                onChange={(e) => setNewDueDate(e.target.value)}
+                className="w-full px-3 py-2 bg-[#161b22] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none focus:border-[#58a6ff] [color-scheme:dark]"
+                style={{ 
+                  colorScheme: 'dark',
+                  opacity: 1
+                }}
+              />
+            </div>
           </div>
           
           <motion.button
@@ -219,6 +211,56 @@ export default function TodoNew() {
           >
             할일 추가
           </motion.button>
+        </div>
+
+        {/* 검색 및 필터 */}
+        <div className="bg-[#0d1117] p-4 rounded-lg border border-[#30363d] mb-6">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-[#58a6ff] font-medium">목록 검색/필터</h3>
+            {searchText && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSearchText("")}
+                className="text-xs px-2 py-1 bg-[#21262d] text-[#8b949e] hover:text-[#f85149] rounded-md flex items-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                검색 초기화
+              </motion.button>
+            )}
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <div className="relative flex-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#8b949e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                placeholder="할일 검색..."
+                className="w-full pl-10 px-4 py-2 bg-[#161b22] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none focus:border-[#58a6ff]"
+              />
+            </div>
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="px-4 py-2 bg-[#161b22] border border-[#30363d] rounded-md text-[#f0f6fc] focus:outline-none"
+            >
+              <option value="all">모두 보기</option>
+              <option value="active">진행 중</option>
+              <option value="completed">완료됨</option>
+            </select>
+          </div>
+          {filteredTodos.length > 0 && (
+            <div className="mt-3 text-xs text-[#8b949e]">
+              검색 결과: {filteredTodos.length}개 항목
+            </div>
+          )}
         </div>
 
         {/* 할일 목록 */}
