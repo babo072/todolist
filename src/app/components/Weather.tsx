@@ -69,6 +69,26 @@ const getWeatherIcon = (iconCode: string) => {
   return `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
 };
 
+// 로딩 SVG 컴포넌트
+const LoadingIcon = () => (
+  <svg 
+    width="80" 
+    height="80" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className="text-gray-500 animate-pulse"
+  >
+    <path 
+      d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" 
+      stroke="currentColor" 
+      strokeWidth="1.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export default function Weather() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -143,13 +163,7 @@ export default function Weather() {
                 className="flex items-center justify-center w-full"
                 style={{ height: '80px' }}
               >
-                <Image
-                  src="/weather-loading.svg"
-                  alt="Loading weather data"
-                  width={80}
-                  height={80}
-                  style={{ filter: 'invert(0.7)' }}
-                />
+                <LoadingIcon />
               </div>
               <p className="text-gray-500 mt-4">날씨 정보를 불러오는 중...</p>
             </div>
@@ -232,6 +246,7 @@ export default function Weather() {
                       width={100}
                       height={100}
                       className="w-20 h-20"
+                      unoptimized={true}
                     />
                   </div>
                 </div>
