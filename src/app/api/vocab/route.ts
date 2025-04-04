@@ -1,10 +1,41 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-// OpenAI 클라이언트 초기화
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// 더미 데이터 (API 키가 없을 때 사용)
+const dummyData = {
+  english: [
+    { primary: "hello", translation: "안녕하세요" },
+    { primary: "goodbye", translation: "안녕히 가세요" },
+    { primary: "thank you", translation: "감사합니다" },
+    { primary: "please", translation: "부탁합니다" },
+    { primary: "sorry", translation: "죄송합니다" },
+    { primary: "excuse me", translation: "실례합니다" },
+    { primary: "help", translation: "도움" },
+    { primary: "friend", translation: "친구" },
+    { primary: "family", translation: "가족" },
+    { primary: "love", translation: "사랑" }
+  ],
+  thai: [
+    { primary: "สวัสดี", translation: "안녕하세요" },
+    { primary: "ลาก่อน", translation: "안녕히 가세요" },
+    { primary: "ขอบคุณ", translation: "감사합니다" },
+    { primary: "กรุณา", translation: "부탁합니다" },
+    { primary: "ขอโทษ", translation: "죄송합니다" },
+    { primary: "ขอรบกวน", translation: "실례합니다" },
+    { primary: "ช่วยเหลือ", translation: "도움" },
+    { primary: "เพื่อน", translation: "친구" },
+    { primary: "ครอบครัว", translation: "가족" },
+    { primary: "รัก", translation: "사랑" }
+  ]
+};
+
+// OpenAI 클라이언트 초기화 (API 키가 있는 경우에만)
+let openai: OpenAI | null = null;
+if (process.env.OPENAI_API_KEY) {
+  openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+}
 
 // API 요청 핸들러
 export async function GET(request: Request) {
@@ -12,6 +43,30 @@ export async function GET(request: Request) {
     // URL에서 쿼리 파라미터 가져오기
     const { searchParams } = new URL(request.url);
     const primaryLanguage = searchParams.get('primary') || 'english'; // 기본값은 영어
+    
+    // API 키가 없거나 개발 모드인 경우 더미 데이터 사용
+    if (!openai || process.env.NODE_ENV === 'development') {
+      console.log('Using dummy data (API key not available or in development mode)');
+      
+      // 랜덤 인덱스 선택
+      const dataSet = primaryLanguage === 'english' ? dummyData.english : dummyData.thai;
+      const randomIndex = Math.floor(Math.random() * dataSet.length);
+      const selectedWord = dataSet[randomIndex];
+      
+      // 언어 코드 추가
+      const responseWithLanguage = {
+        ...selectedWord,
+        languageCode: primaryLanguage === 'english' ? 'en' : 'th'
+      };
+      
+      return NextResponse.json(responseWithLanguage, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+    }
     
     // 랜덤 시드 생성 (캐싱 방지 및 다양성 보장)
     const randomSeed = Math.floor(Math.random() * 10000);
@@ -65,7 +120,7 @@ export async function GET(request: Request) {
       }
     });
   } catch (error) {
-    console.error('OpenAI API 호출 오류:', error);
+    console.error('API 호출 오류:', error);
     return NextResponse.json(
       { error: '단어를 가져오는데 실패했습니다.' },
       { status: 500 }
